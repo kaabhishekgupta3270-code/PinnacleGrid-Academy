@@ -1,97 +1,110 @@
 FILE_NAME = "expenses.txt"
 
 
+# Add Expense
 def add_expense():
     try:
         date = input("Enter Date (DD-MM-YYYY): ")
         category = input("Enter Category: ")
-        amount = float(input("Enter Amount: "))
+        amount = float(input("Enter Amount: ₹"))
 
         with open(FILE_NAME, "a") as file:
             file.write(f"{date},{category},{amount}\n")
 
-        print("Expense added successfully!")
+        print("\nExpense added successfully!")
 
     except ValueError:
-        print("Invalid amount. Please enter a number.")
+        print("\nInvalid amount! Please enter numbers only.")
 
 
+# View Expenses
 def view_expenses():
     try:
         with open(FILE_NAME, "r") as file:
-            data = file.readlines()
+            expenses = file.readlines()
 
-            if not data:
-                print("No expenses found.")
-                return
+        if len(expenses) == 0:
+            print("\nNo expenses found.")
+            return
 
-            print("\n------ Expenses ------")
-            for expense in data:
-                date, category, amount = expense.strip().split(",")
-                print(f"Date: {date}")
-                print(f"Category: {category}")
-                print(f"Amount: ₹{amount}")
-                print("-" * 25)
+        print("\n========== Expense List ==========")
+
+        for i, expense in enumerate(expenses, start=1):
+            date, category, amount = expense.strip().split(",")
+
+            print(f"\nExpense No : {i}")
+            print(f"Date        : {date}")
+            print(f"Category    : {category}")
+            print(f"Amount      : ₹{amount}")
+            print("-" * 30)
 
     except FileNotFoundError:
-        print("No expense file found.")
+        print("\nNo expense file found.")
 
 
+# Delete Expense
 def delete_expense():
     try:
         with open(FILE_NAME, "r") as file:
             expenses = file.readlines()
 
-        if not expenses:
-            print("No expenses available.")
+        if len(expenses) == 0:
+            print("\nNo expenses available.")
             return
 
         view_expenses()
 
-        index = int(input("Enter expense number to delete: ")) - 1
+        number = int(input("\nEnter Expense Number to Delete: "))
 
-        if 0 <= index < len(expenses):
-            expenses.pop(index)
+        if 1 <= number <= len(expenses):
+
+            expenses.pop(number - 1)
 
             with open(FILE_NAME, "w") as file:
                 file.writelines(expenses)
 
-            print("Expense deleted successfully!")
+            print("\nExpense deleted successfully!")
 
         else:
-            print("Invalid expense number.")
+            print("\nInvalid expense number.")
 
     except FileNotFoundError:
-        print("No expense file found.")
+        print("\nNo expense file found.")
 
     except ValueError:
-        print("Please enter a valid number.")
+        print("\nPlease enter a valid number.")
 
 
+# Total Spending
 def total_spending():
     total = 0
 
     try:
         with open(FILE_NAME, "r") as file:
+
             for expense in file:
-                _, _, amount = expense.strip().split(",")
+                date, category, amount = expense.strip().split(",")
                 total += float(amount)
 
-        print(f"\nTotal Spending: ₹{total}")
+        print(f"\nTotal Spending = ₹{total}")
 
     except FileNotFoundError:
-        print("No expense file found.")
+        print("\nNo expense file found.")
 
 
+# Main Menu
 while True:
-    print("\n===== Expense Tracker =====")
+
+    print("\n===============================")
+    print("      Expense Tracker")
+    print("===============================")
     print("1. Add Expense")
     print("2. View Expenses")
     print("3. Delete Expense")
     print("4. Total Spending")
     print("5. Exit")
 
-    choice = input("Enter your choice: ")
+    choice = input("\nEnter your choice: ")
 
     if choice == "1":
         add_expense()
@@ -106,8 +119,8 @@ while True:
         total_spending()
 
     elif choice == "5":
-        print("Thank You!")
+        print("\nThank You!")
         break
 
     else:
-        print("Invalid Choice!")
+        print("\nInvalid Choice! Please try again.")
